@@ -28,10 +28,12 @@ speed = 2
 
 # 随机选择初始方向
 directions = ['LEFT', 'RIGHT', 'UP', 'DOWN']
+# 随机序列里面一个元素(对序列下标索引没有需求,建议使用这个)
 direction = random.choice(directions)
 
 # 初始化蛇身，初始长度为1
 snake_body = [(snack_x, snack_y)]
+
 
 def check_collision(snack_x, snack_y, food_x, food_y, snack_size=22, food_radius=4):
     """
@@ -54,6 +56,7 @@ def check_collision(snack_x, snack_y, food_x, food_y, snack_size=22, food_radius
     distance = ((snack_center_x - food_center_x) ** 2 + (snack_center_y - food_center_y) ** 2) ** 0.5
     # 判断是否碰撞
     return distance < (snack_size / 2 + food_radius)
+
 
 # 游戏主循环
 while running:
