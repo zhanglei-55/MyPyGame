@@ -1,5 +1,5 @@
 """
-@File : main.py.py
+@File : main.py
 @Author : mr
 @Description : 
 """
