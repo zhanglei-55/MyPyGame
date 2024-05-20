@@ -1,7 +1,7 @@
 """
 @File : test_main.py.py
 @Author : mr
-@Description : 
+@Description :
 """
 import sys
 import pygame
@@ -19,8 +19,11 @@ running = True
 # 设置初始蛇和食物的位置
 snack_x = 300
 snack_y = 300
-food_x = random.randint(0, screen_width - 10)
-food_y = random.randint(0, screen_height - 10)
+
+# 食物不能在屏幕外
+distance = 10
+food_x = random.randint(distance, screen_width - distance)
+food_y = random.randint(distance, screen_height - distance)
 
 # 初始化游戏得分和蛇的速度
 score = 0
@@ -33,6 +36,8 @@ direction = random.choice(directions)
 
 # 初始化蛇身，初始长度为1
 snake_body = [(snack_x, snack_y)]
+
+food_count = 10
 
 
 def check_collision(snack_x, snack_y, food_x, food_y, snack_size=22, food_radius=4):
@@ -58,6 +63,31 @@ def check_collision(snack_x, snack_y, food_x, food_y, snack_size=22, food_radius
     return distance < (snack_size / 2 + food_radius)
 
 
+def draw_score():
+    """
+    绘制游戏得分
+    """
+    score_font = pygame.font.SysFont(None, 30)
+    score_text = score_font.render(f"Score: {score}", True, (255, 255, 255))
+    screen.blit(score_text, (10, 10))
+
+
+def new_direction(direction):
+    """
+    根据当前方向，选择新的方向
+    :param direction:
+    :return:
+    """
+    if direction == 'LEFT':
+        return random.choice(['UP', 'DOWN', "RIGHT"])
+    if direction == 'RIGHT':
+        return random.choice(['UP', 'DOWN', "LEFT"])
+    if direction == 'UP':
+        return random.choice(['LEFT', 'RIGHT', "DOWN"])
+    if direction == 'DOWN':
+        return random.choice(['LEFT', 'RIGHT', "UP"])
+
+
 # 游戏主循环
 while running:
     # 处理事件，如退出和按键
@@ -81,7 +111,11 @@ while running:
         direction = 'UP'
     if keys[pygame.K_DOWN] and direction != 'UP':
         direction = 'DOWN'
-
+    # 判断蛇是否快撞上屏幕 掉头
+    if snack_x < 0 or snack_x > screen_width - 15 or snack_y < 0 or snack_y > screen_height - 15:
+        print("游戏结束")
+        running = False
+        # new_direction(direction)
     # 根据方向移动蛇头
     if direction == 'LEFT':
         snack_x -= speed
@@ -91,7 +125,6 @@ while running:
         snack_y -= speed
     if direction == 'DOWN':
         snack_y += speed
-
     # 更新蛇身位置
     snake_body.append((snack_x, snack_y))
     if len(snake_body) > score + 6:
@@ -107,16 +140,12 @@ while running:
     # 检查蛇是否吃到食物
     if check_collision(snack_x, snack_y, food_x, food_y):
         score += 1
-        food_x = random.randint(0, screen_width - 8)
-        food_y = random.randint(0, screen_height - 8)
-
+        food_x = random.randint(distance, screen_width - distance)
+        food_y = random.randint(distance, screen_height - distance)
+    draw_score()
     # 更新屏幕
     pygame.display.flip()
     clock.tick(60)  # 限制游戏帧率为60FPS
-
-# 游戏结束，输出得分和蛇的长度
-print("Score:", score)
-print(len(snake_body))
 
 # 退出pygame
 pygame.quit()
