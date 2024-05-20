@@ -11,9 +11,11 @@ import random
 pygame.init()
 screen_width = 500
 screen_height = 400
-
+# 创建屏幕对象
 screen = pygame.display.set_mode((screen_width, screen_height))
+# 创建时钟对象
 clock = pygame.time.Clock()
+# 设置游戏是否运行的变量
 running = True
 
 # 设置初始蛇和食物的位置
@@ -22,6 +24,7 @@ snack_y = 300
 
 # 食物不能在屏幕外
 distance = 10
+# 使用随机数，随机生成食物位置 => 坐标左上角为(0,0) => x轴向右,y轴向左
 food_x = random.randint(distance, screen_width - distance)
 food_y = random.randint(distance, screen_height - distance)
 
@@ -31,12 +34,13 @@ speed = 2
 
 # 随机选择初始方向
 directions = ['LEFT', 'RIGHT', 'UP', 'DOWN']
-# 随机序列里面一个元素(对序列下标索引没有需求,建议使用这个)
+# 使用此来随机获取列表的值，而不是索引
 direction = random.choice(directions)
 
 # 初始化蛇身，初始长度为1
 snake_body = [(snack_x, snack_y)]
 
+# 设置食物数量
 food_count = 10
 
 
@@ -78,14 +82,15 @@ def new_direction(direction):
     :param direction:
     :return:
     """
+    # 根据当前方向，随机选择一个新的方向，避免蛇原地掉头
     if direction == 'LEFT':
         return random.choice(['UP', 'DOWN', "RIGHT"])
     if direction == 'RIGHT':
         return random.choice(['UP', 'DOWN', "LEFT"])
     if direction == 'UP':
-        return random.choice(['LEFT', 'RIGHT', "DOWN"])
+        return random.choice(["RIGHT", 'DOWN', "LEFT"])
     if direction == 'DOWN':
-        return random.choice(['LEFT', 'RIGHT', "UP"])
+        return random.choice(["LEFT", 'UP', "RIGHT"])
 
 
 # 游戏主循环
@@ -103,6 +108,7 @@ while running:
 
     # 处理按键改变方向
     keys = pygame.key.get_pressed()
+    # 规定按键后的新方向，避免蛇身体撞墙
     if keys[pygame.K_LEFT] and direction != 'RIGHT':
         direction = 'LEFT'
     if keys[pygame.K_RIGHT] and direction != 'LEFT':
@@ -111,11 +117,24 @@ while running:
         direction = 'UP'
     if keys[pygame.K_DOWN] and direction != 'UP':
         direction = 'DOWN'
-    # 判断蛇是否快撞上屏幕 掉头
+    if (
+            snack_x < 20 or snack_x > screen_width - 20 or snack_y < 20 or snack_y > screen_height - 20) and not changed_direction:
+        direction = new_direction(direction)
+        changed_direction = True
+    else:
+        changed_direction = False
+
+        # 判断蛇是否撞上屏幕
+    if snack_x < 0 or snack_x > screen_width - 15 or snack_y < 0 or snack_y > screen_height - 15:
+        print("游戏结束")
+        running = False
+
+    # 判断蛇是否撞上屏幕
     if snack_x < 0 or snack_x > screen_width - 15 or snack_y < 0 or snack_y > screen_height - 15:
         print("游戏结束")
         running = False
         # new_direction(direction)
+
     # 根据方向移动蛇头
     if direction == 'LEFT':
         snack_x -= speed
