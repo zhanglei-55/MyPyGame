@@ -1,7 +1,8 @@
 """
 @File : map.py
 @Author : mr
-@Description : 
+@Description :
+使用二维数组绘制地图
 """
 import pygame
 import sys
@@ -17,7 +18,7 @@ BLACK = (0, 0, 0)
 
 # 定义地图数据
 # 0表示空白区域，1表示墙壁，2表示豆子
-MAP= [
+MAP = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 0, 0, 1, 1, 0, 1],
@@ -43,6 +44,8 @@ size_width = 40
 size_height = 40
 wall_new_img = pygame.transform.scale(wall_img, (40, 40))
 dot_new_img = pygame.transform.scale(dot_img, (20, 20))
+
+
 # 游戏主循环
 def main():
     while True:
@@ -64,6 +67,7 @@ def main():
 
         # 更新屏幕
         pygame.display.update()
+
 
 if __name__ == "__main__":
     main()
